@@ -6,7 +6,7 @@ const Dashboard = () => {
     const characters = [
         {
           name: 'Richard Hendricks',
-          url: './img/richard.jpg'
+          url: '../images/tinder-b:w.png'
         },
         {
           name: 'Erlich Bachman',
@@ -43,7 +43,7 @@ const Dashboard = () => {
             <div className="swipe-cont">
                 <div className="card-cont">
                     {characters.map((character) =>
-                    <TinderCard className='swipe' key="{character.name}" onSwipe={(dir) => swiped(dir, character.name)} onCardLeftScreen={() => outOfFrame(character.name)}>
+                    <TinderCard className='swipe' key={character.name} onSwipe={(dir) => swiped(dir, character.name)} onCardLeftScreen={() => outOfFrame(character.name)}>
                         <div style={{ backgroundImage: 'url(' + character.url + ')' }} className='card'>
                             <h3>{character.name}</h3>
                         </div>
