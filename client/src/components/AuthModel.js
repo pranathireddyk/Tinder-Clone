@@ -23,7 +23,7 @@ const AuthModel = ({setShowModel, setIsSignUp, isSignUp}) => {
                 return
             }
             console.log('posting', email, password)
-            const response = await axios.post(`http://localhost:8000/${isSignUp ? 'sign' : 'login'}`, {email, password})
+            const response = await axios.post(`http://localhost:8000/${isSignUp ? 'signup' : 'login'}`, {email, password})
 
             setCookie('AuthToken', response.data.token)
             setCookie('UserId', response.data.userId)

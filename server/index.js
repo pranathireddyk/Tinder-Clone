@@ -222,7 +222,7 @@ app.get('/messages', async (req, res) => {
         const database = client.db('tinder')
         const messages = database.collection('messages')
         const query = {from_userId: userId, to_userId: correspondingUserId}
-        const foundUsers = await users.find(query).toArray()
+        const foundUsers = await messages.find(query).toArray()
 
         res.send(foundUsers)
     } finally {
@@ -237,7 +237,7 @@ app.post('/message', async(req, res) => {
 
     try {
         await client.connect()
-        const data = client.db('tinder')
+        const database = client.db('tinder')
         const messages = database.collection('messages')
         const insertedMessage = await messages.insertOne(message)
         res.send(insertedMessage)

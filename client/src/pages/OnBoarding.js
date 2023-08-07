@@ -1,12 +1,11 @@
 import { useState } from "react";
 import Nav from "../components/Nav";
-import {useCookie} from 'react-cookie'
-import { Navigate } from "react-router-dom";
+import {useCookies} from 'react-cookie'
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 const OnBoarding = () => {
-    const [cookies, setCookie, removeCookie] = useCookie(null)
+    const [cookies, setCookie, removeCookie] = useCookies(null)
     let navigate = useNavigate()
 
     const [formData, setFormData] =  useState({
@@ -26,8 +25,8 @@ const OnBoarding = () => {
     const handleSubmit = async(e) => {
         e.preventDefault()
         try {
-            const response = await axios.put('https://localhost:8000/user', {formData})
-            const success = response.statusCode === 200
+            const response = await axios.put('http://localhost:8000/user', {formData})
+            const success = response.status === 200
             if (success) navigate('/dashboard')
         } catch(err) {
             console.log(err)
@@ -35,7 +34,7 @@ const OnBoarding = () => {
     }
 
     const handleChange = (e) => {
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.checked.value
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         const name = e.target.name
 
         setFormData((prevState) => ({
