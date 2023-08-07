@@ -5,8 +5,9 @@ const {v4: uuidv4} = require('uuid')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
+require('dotenv').config()
  
-const uri = 'mongodb+srv://pranathikunadi:Pranath1@cluster0.7efxxyo.mongodb.net/?retryWrites=true&w=majority';
+const uri = process.env.URI;
 
 const app = express()
 app.use(cors())
@@ -29,11 +30,11 @@ app.post('/signup', async (req, res) => {
         const database = client.db('tinder')
         const users = database.collection('users')
 
-        const existingUser = users.findOne({email})
+        const existingUser = await users.findOne({email})
 
-        // if(existingUser) {
-        //     return res.status(409).send('User already exists. Please login');
-        // }
+        if(existingUser) {
+            return res.status(409).send('User already exists. Please login');
+        }
 
         const sanitizedEmail = email.toLowerCase()
         const data = {
@@ -44,12 +45,14 @@ app.post('/signup', async (req, res) => {
         const insertedUser = await users.insertOne(data)
 
         const token = jwt.sign(insertedUser, sanitizedEmail, {
-            expiresIn: 60+24,
+            expiresIn: 60*24,
         })
 
         res.status(201).json({token, userId: generateduserId})
     } catch(err) {
         console.log(err)
+    } finally {
+        await client.close()
     }
 
 })
@@ -74,6 +77,8 @@ app.post('/login', async (req, res) => {
         res.status(400).send('Invalid Credentials')
     } catch(err) {
         console.log(err)
+    } finally {
+        await client.close()
     }
 });
 
@@ -87,7 +92,7 @@ app.get('/gendered-users', async (req, res) => {
         await client.connect()
         const database = client.db('tinder')
         const users = database.collection('users')
-        const query = {gender: {$eg: 'man'}}
+        const query = {gender: gender}
         const foundUsers = await users.find(query).toArray()
 
         res.send(foundUsers)
@@ -203,6 +208,39 @@ app.put('/addmatch', async(req, res) => {
         }
         const user = await users.updateOne(query, updateDocument)
         res.send(user)
+    } finally {
+        await client.close()
+    }
+})
+
+app.get('/messages', async (req, res) => {
+    const client = new MongoClient(uri);
+    const {userId, correspondingUserId} = req.query
+
+    try {
+        await client.connect()
+        const database = client.db('tinder')
+        const messages = database.collection('messages')
+        const query = {from_userId: userId, to_userId: correspondingUserId}
+        const foundUsers = await users.find(query).toArray()
+
+        res.send(foundUsers)
+    } finally {
+        await client.close()
+    }
+})
+
+
+app.post('/message', async(req, res) => {
+    const client = new MongoClient(uri)
+    const message = req.body.message
+
+    try {
+        await client.connect()
+        const data = client.db('tinder')
+        const messages = database.collection('messages')
+        const insertedMessage = await messages.insertOne(message)
+        res.send(insertedMessage)
     } finally {
         await client.close()
     }

@@ -7,9 +7,6 @@ import axios from 'axios';
 
 const OnBoarding = () => {
     const [cookies, setCookie, removeCookie] = useCookie(null)
-    const [showModel, setShowModel] = useState(false)
-    const [isSignUp, setIsSignUp] = useState(true)
-    const authToken = false
     let navigate = useNavigate()
 
     const [formData, setFormData] =  useState({
@@ -27,7 +24,6 @@ const OnBoarding = () => {
     })
 
     const handleSubmit = async(e) => {
-        console.log('submitted')
         e.preventDefault()
         try {
             const response = await axios.put('https://localhost:8000/user', {formData})
@@ -39,10 +35,8 @@ const OnBoarding = () => {
     }
 
     const handleChange = (e) => {
-        console.log('e', e)
-        const value = e.target.value
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.checked.value
         const name = e.target.name
-        console.log('value' + value, 'name' + name)
 
         setFormData((prevState) => ({
             ...prevState,
@@ -50,13 +44,16 @@ const OnBoarding = () => {
         }))
     }
 
-    console.log(formData)
-
     return (
         <>
-            <Nav minimal={false} authToken={authToken} setShowModel={setShowModel} showModel={showModel} setIsSignUp={setIsSignUp} />
+            <Nav 
+            minimal={true} 
+            setShowModel={()=> {
+            }} 
+            showModel={false}
+            />
             <div className="onboarding">
-                <h2>Create Account</h2>
+                <h2>CREATE ACCOUNT</h2>
                 <form onSubmit={handleSubmit}>
                     <section>
                         <label htmlFor="first_name">First Name</label>
@@ -111,36 +108,33 @@ const OnBoarding = () => {
                         </div>
                         <label>Gender</label>
                         <div className="mul-container">
-                            <label htmlFor="woman">Woman</label>
                             <input
                                 type="radio"
                                 id="woman"
                                 name="gender"
-                                required={true}
                                 value="woman"
                                 onChange={handleChange}
                                 checked={formData.gender === 'woman'}
                             />
-                            <label htmlFor="man">Man</label>
+                            <label htmlFor="woman">Woman</label>
                             <input
                                 type="radio"
                                 id="man"
                                 name="gender"
-                                required={true}
                                 value="man"
                                 onChange={handleChange}
                                 checked={formData.gender === 'man'}
                             />
-                            <label htmlFor="other">Other</label>
+                            <label htmlFor="man">Man</label>
                             <input
                                 type="radio"
                                 id="other"
                                 name="gender"
-                                required={true}
                                 value="other"
                                 onChange={handleChange}
                                 checked={formData.gender === 'other'}
                             />
+                            <label htmlFor="other">Other</label>
                         </div>
                         <label>Gender Interest</label>
                         <div className="mul-container">

@@ -1,19 +1,16 @@
 import { useState } from "react";
 import axios from 'axios';
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {useCookie} from 'react-cookie';
+import { useCookies } from 'react-cookie'; // Change the import here
 
 const AuthModel = ({setShowModel, setIsSignUp, isSignUp}) => {
     const [email, setEmail] = useState(null)
     const [password, setPassword] = useState(null)
     const [confirmPassword, setConfirmPassword] = useState(null)
     const [error, setError] = useState(null)
-    const [cookies, setCookie, removeCookie] = useCookie(null)
+    const [cookies, setCookie, removeCookie] = useCookies(); // Change the hook name here
 
     let navigate = useNavigate()
-
-    console.log(email, password, confirmPassword);
     const handleClick = () => {
         setShowModel(false);
     }
