@@ -74,7 +74,9 @@ app.post('/login', async (req, res) => {
             })
             res.status(201).json({token, userId: user.user_id})
         }
+        else {
         res.status(400).send('Invalid Credentials')
+        }
     } catch(err) {
         console.log(err)
     } finally {
@@ -119,19 +121,19 @@ app.get('/user', async (req, res) => {
     }
 })
 
-app.get('/users', async (req, res) => {
-    const client = new MongoClient(uri);
-    try {
-        await client.connect()
-        const database = client.db('tinder')
-        const users = database.collection('users')
+// app.get('/users', async (req, res) => {
+//     const client = new MongoClient(uri);
+//     try {
+//         await client.connect()
+//         const database = client.db('tinder')
+//         const users = database.collection('users')
 
-        const returnedUsers = await users.find().toArray()
-        res.send(returnedUsers)
-    } finally {
-        await client.close()
-    }
-})
+//         const returnedUsers = await users.find().toArray()
+//         res.send(returnedUsers)
+//     } finally {
+//         await client.close()
+//     }
+// })
 
 app.get('/users', async (req, res) => {
     const client = new MongoClient(uri)
